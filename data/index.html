@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>BATT_01</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      min-height: 100dvh;
+      background: #001400;
+      color: #00ff41;
+      font-family: 'Courier New', Courier, monospace;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding: 24px 16px;
+    }
+
+    header {
+      font-size: 1.3rem;
+      letter-spacing: .18em;
+      color: #39ff14;
+      text-shadow: 0 0 14px #39ff14;
+      text-align: center;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 380px;
+      background: #002000;
+      border: 2px solid #00bb00;
+      border-radius: 20px;
+      padding: 30px 20px 24px;
+      text-align: center;
+      box-shadow: 0 0 28px rgba(0, 220, 0, .22), inset 0 0 12px rgba(0,200,0,.05);
+    }
+
+    .label {
+      font-size: 1rem;
+      color: #009900;
+      letter-spacing: .1em;
+      margin-bottom: 10px;
+    }
+
+    .value-row {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .value {
+      font-size: 5.5rem;
+      font-weight: 700;
+      line-height: 1;
+      color: #00ff41;
+      text-shadow: 0 0 22px #00ff41, 0 0 6px #00ff41;
+      letter-spacing: -.02em;
+      min-width: 3ch;
+    }
+
+    .unit {
+      font-size: 2rem;
+      color: #39ff14;
+      text-shadow: 0 0 10px #39ff14;
+    }
+
+    footer {
+      font-size: .82rem;
+      color: #006600;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      background: #00ff41;
+      border-radius: 50%;
+      flex-shrink: 0;
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; box-shadow: 0 0 6px #00ff41; }
+      50%       { opacity: .25; box-shadow: none; }
+    }
+
+    /* ── Status bar ──────────────────────────────────────────────────────── */
+    #status {
+      font-size: .75rem;
+      color: #004400;
+      letter-spacing: .06em;
+    }
+    #status.ok  { color: #00aa00; }
+    #status.err { color: #cc4400; }
+  </style>
+</head>
+<body>
+
+  <header>⚡ BATT_01 MONITOR</header>
+
+  <div class="card">
+    <div class="label">VOLTAGE · แรงดัน</div>
+    <div class="value-row">
+      <span class="value" id="v">—</span>
+      <span class="unit">V</span>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="label">CURRENT · กระแส</div>
+    <div class="value-row">
+      <span class="value" id="i">—</span>
+      <span class="unit">A</span>
+    </div>
+  </div>
+
+  <div id="status">กำลังเชื่อมต่อ…</div>
+
+  <footer>
+    <div class="dot"></div>
+    อัพเดทอัตโนมัติทุก 5 วินาที
+  </footer>
+
+  <script>
+    (function () {
+      var vEl     = document.getElementById('v');
+      var iEl     = document.getElementById('i');
+      var statusEl= document.getElementById('status');
+      var ws, retryTimer;
+
+      function connect() {
+        clearTimeout(retryTimer);
+        ws = new WebSocket('ws://' + location.hostname + '/ws');
+
+        ws.onopen = function () {
+          statusEl.textContent = 'เชื่อมต่อแล้ว · Connected';
+          statusEl.className = 'ok';
+        };
+
+        ws.onmessage = function (e) {
+          try {
+            var d = JSON.parse(e.data);
+            vEl.textContent = parseFloat(d.v).toFixed(2);
+            iEl.textContent = parseFloat(d.i).toFixed(2);
+          } catch (_) {}
+        };
+
+        ws.onclose = function () {
+          statusEl.textContent = 'ขาดการเชื่อมต่อ — กำลังเชื่อมต่อใหม่…';
+          statusEl.className = 'err';
+          retryTimer = setTimeout(connect, 3000);
+        };
+
+        ws.onerror = function () { ws.close(); };
+      }
+
+      connect();
+    })();
+  </script>
+</body>
+</html>
