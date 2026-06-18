@@ -9,10 +9,10 @@
 #include <BLE2902.h>
 
 // ── WiFi Access Point ─────────────────────────────────────────────────────────
-#define WIFI_SSID   "WIFI_BATT_02"   // ไม่มีรหัสผ่าน (open AP)
+#define WIFI_SSID   "WIFI_BATT_01"   // ไม่มีรหัสผ่าน (open AP)
 
 // ── BLE ───────────────────────────────────────────────────────────────────────
-#define BLE_NAME    "BATT_02"
+#define BLE_NAME    "BATT_01"
 #define SVC_UUID    "4fafc201-1fb5-459e-8fcc-c5c9c331914b"
 #define VOLT_UUID   "beb5483e-36e1-4688-b7f5-ea07361b26a8"
 #define CURR_UUID   "beb5483e-36e1-4688-b7f5-ea07361b26a9"
@@ -95,7 +95,7 @@ static void onWsEvent(AsyncWebSocket*, AsyncWebSocketClient* client,
 // ── setup ─────────────────────────────────────────────────────────────────────
 void setup() {
   Serial.begin(115200);
-  Serial.println("\n=== BATT_02 starting ===");
+  Serial.println("\n=== BATT_01 starting ===");
 
   // RS485 + ModbusMaster
   pinMode(RS485_DE, OUTPUT);
