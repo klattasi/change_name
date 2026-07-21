@@ -1,11 +1,18 @@
 <!DOCTYPE html>
 <html lang="th">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>BATT_01</title>
   <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
 
     body {
       min-height: 100dvh;
@@ -21,11 +28,16 @@
     }
 
     header {
-      font-size: 1.3rem;
+      font-size: 2.2rem;
+      line-height: 1.3;
       letter-spacing: .18em;
       color: #39ff14;
       text-shadow: 0 0 14px #39ff14;
       text-align: center;
+    }
+
+    header strong {
+      font-weight: 900;
     }
 
     .card {
@@ -36,7 +48,7 @@
       border-radius: 20px;
       padding: 30px 20px 24px;
       text-align: center;
-      box-shadow: 0 0 28px rgba(0, 220, 0, .22), inset 0 0 12px rgba(0,200,0,.05);
+      box-shadow: 0 0 28px rgba(0, 220, 0, .22), inset 0 0 12px rgba(0, 200, 0, .05);
     }
 
     .label {
@@ -87,8 +99,17 @@
     }
 
     @keyframes pulse {
-      0%, 100% { opacity: 1; box-shadow: 0 0 6px #00ff41; }
-      50%       { opacity: .25; box-shadow: none; }
+
+      0%,
+      100% {
+        opacity: 1;
+        box-shadow: 0 0 6px #00ff41;
+      }
+
+      50% {
+        opacity: .25;
+        box-shadow: none;
+      }
     }
 
     /* ── Status bar ──────────────────────────────────────────────────────── */
@@ -97,13 +118,20 @@
       color: #004400;
       letter-spacing: .06em;
     }
-    #status.ok  { color: #00aa00; }
-    #status.err { color: #cc4400; }
+
+    #status.ok {
+      color: #00aa00;
+    }
+
+    #status.err {
+      color: #cc4400;
+    }
   </style>
 </head>
+
 <body>
 
-  <header>⚡ BATT_01 MONITOR</header>
+  <header><strong>⚡BATT_01⚡</strong><br>(Monitoring)</header>
 
   <div class="card">
     <div class="label">VOLTAGE · แรงดัน</div>
@@ -130,9 +158,9 @@
 
   <script>
     (function () {
-      var vEl     = document.getElementById('v');
-      var iEl     = document.getElementById('i');
-      var statusEl= document.getElementById('status');
+      var vEl = document.getElementById('v');
+      var iEl = document.getElementById('i');
+      var statusEl = document.getElementById('status');
       var ws, retryTimer;
 
       function connect() {
@@ -149,7 +177,7 @@
             var d = JSON.parse(e.data);
             vEl.textContent = parseFloat(d.v).toFixed(2);
             iEl.textContent = parseFloat(d.i).toFixed(2);
-          } catch (_) {}
+          } catch (_) { }
         };
 
         ws.onclose = function () {
@@ -165,4 +193,5 @@
     })();
   </script>
 </body>
+
 </html>
